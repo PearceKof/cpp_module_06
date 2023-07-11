@@ -1,24 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Data.hpp                                           :+:      :+:    :+:   */
+/*   Base.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/10 15:43:35 by blaurent          #+#    #+#             */
-/*   Updated: 2023/07/11 16:40:47 by blaurent         ###   ########.fr       */
+/*   Created: 2023/07/11 16:56:30 by blaurent          #+#    #+#             */
+/*   Updated: 2023/07/11 16:57:24 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DATA_HPP
-# define DATA_HPP
+#ifndef BASE_HPP
+# define BASE_HPP
 
-# include <string>
-
-struct Data
+class Base
 {
-	std::string str;
-	int nb;
+public:
+	virtual ~Base() {}
 };
 
 #endif

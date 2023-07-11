@@ -6,12 +6,12 @@
 #    By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/10 15:42:54 by blaurent          #+#    #+#              #
-#    Updated: 2023/07/10 15:43:03 by blaurent         ###   ########.fr        #
+#    Updated: 2023/07/11 16:48:41 by blaurent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= serialisation
-SRCS	= main.cpp ScalarConverter.cpp
+SRCS	= Serializer.cpp main.cpp
 	
 CC         = c++
 FLAGS    = -Wall -Wextra -Werror -std=c++98
