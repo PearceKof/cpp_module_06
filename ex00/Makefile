@@ -6,7 +6,7 @@
 #    By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/10 15:37:05 by blaurent          #+#    #+#              #
-#    Updated: 2023/07/11 14:21:26 by blaurent         ###   ########.fr        #
+#    Updated: 2023/07/12 14:10:47 by blaurent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME	= convert
 SRCS	= main.cpp ScalarConverter.cpp
 	
 CC         = c++
-FLAGS    = -Wall -Wextra -Werror 
+FLAGS    = -Wall -Wextra -Werror -std=c++98
 OBJS        = ${SRCS:.cpp=.o}
                
 

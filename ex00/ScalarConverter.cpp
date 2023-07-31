@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/07/11 16:26:48 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/07/31 17:35:11 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ bool ScalarConverter::isInt()
 
 bool ScalarConverter::isFloat()
 {
-    if ( _str.find( '.' ) == std::string::npos || _str.back() != 'f' 
+    if ( _str.find( '.' ) == std::string::npos || _str.length() - 1 != 'f' 
         || _str.find( '.' ) == 0 || _str.find( '.' ) == _str.length() - 2 )
         return false;
     int found = 0;
@@ -82,7 +82,7 @@ bool ScalarConverter::isDouble()
 
 bool ScalarConverter::isLiteral()
 {
-	if ( !_isValid || !_str.compare("nan") || !_str.compare("nanf")
+	if (!_isValid || !_str.compare("nan") || !_str.compare("nanf")
         || !_str.compare("+inf") || !_str.compare("+inff")
         || !_str.compare("-inf") || !_str.compare( "-inff" )
         || !_str.compare("-inff") || !_str.compare( "-inff" )
@@ -93,20 +93,20 @@ bool ScalarConverter::isLiteral()
 
 bool ScalarConverter::isImpossible()
 {
-	try
-	{
-		if ( _type == INT )
-			_i = std::stoi( _str );
-		else if ( _type == FLOAT )
-			_f = std::stof( _str );
-		else if ( _type == DOUBLE )
-			_d = std::stod( _str );
-	}
-	catch (std::exception& e)
-	{
-		_isValid = false;
-		return true;
-	}
+	// try
+	// {
+	// 	if ( _type == INT )
+	// 		_i = std::strtoi( _str );
+	// 	else if ( _type == FLOAT )
+	// 		_f = std::strof( _str );
+	// 	else if ( _type == DOUBLE )
+	// 		_d = std::strtod( _str );
+	// }
+	// catch (std::exception& e)
+	// {
+	// 	_isValid = false;
+	// 	return true;
+	// }
 	return false;
 }
 
@@ -133,6 +133,7 @@ void ScalarConverter::setType()
 void ScalarConverter::printChar()
 {
 	std::cout << "char: ";
+
     if ((_i > 127 || _i < 0) || !_isValid || _type == LITERAL)
         std::cout << "impossible";
     else if (!std::isprint(_i))
@@ -167,7 +168,7 @@ void ScalarConverter::printFloat()
 		std::cout << "impossible";
 	else
 	{
-        if (_f - static_cast< int > ( _f ) == 0 )
+        if (_f - static_cast< int > ( _f ) == 0)
 			std::cout << _f << ".0f";
 		else
 			std::cout << _f << "f";
@@ -178,6 +179,7 @@ void ScalarConverter::printFloat()
 void ScalarConverter::printDouble()
 {
 	std::cout << "double: ";
+
     if (!_str.compare("nan") || !_str.compare("nanf"))
         std::cout << "nan";
     else if (!_str.compare("+inff") || !_str.compare( "+inf"))
@@ -208,8 +210,9 @@ void ScalarConverter::convert(std::string s)
 {
 	_str = s;
 	setType();
-	if (isImpossible())
-		return;
+
+	// if (isImpossible())
+	// 	return;
 	switch (_type)
 	{
 	case CHAR:
@@ -219,19 +222,19 @@ void ScalarConverter::convert(std::string s)
 		_d = static_cast< double >(_c);
 		break;
 	case INT:
-		_i = std::stoi(_str);
+		_i = static_cast<int>(std::strtod(_str.c_str(), NULL));
 		_f = static_cast< float >(_i);
 		_d = static_cast< double >(_i);
 		_c = static_cast< char >(_i);
 		break;
 	case FLOAT:
-		_f = std::stof(_str);
+		_f = std::strtof(_str.c_str(), NULL);
 		_i = static_cast< int >(_f);
 		_d = static_cast< double >(_f);
 		_c = static_cast< char >(_f);
 		break;
 	case DOUBLE:
-		_d = std::stod(_str);
+		_d = std::strtod(_str.c_str(), NULL);
 		_i = static_cast< int >(_d);
 		_f = static_cast< float >(_d);
 		_c = static_cast< char >(_d);
