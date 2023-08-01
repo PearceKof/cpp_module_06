@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:28:24 by blaurent          #+#    #+#             */
-/*   Updated: 2023/07/11 15:16:51 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:37:05 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <string>
 # include <iostream>
 # include <cstdlib>
+# include <cctype>
+# include <limits>
 
 enum{
 	CHAR,
@@ -57,6 +59,17 @@ public:
 	ScalarConverter&	operator=(const ScalarConverter& src);
 	static void	convert(std::string s);
 	static void printResult();
+
+	class OverflowEception : public std::exception
+	{
+		public:
+			virtual const char* what() const throw() { return "Overflow"; };
+	};
+	class InvalidEception : public std::exception
+	{
+		public:
+			virtual const char* what() const throw() { return "Argument invalide"; };
+	};
 };
 
 

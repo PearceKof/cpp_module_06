@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/07/31 17:35:11 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/01 17:44:23 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,20 +93,14 @@ bool ScalarConverter::isLiteral()
 
 bool ScalarConverter::isImpossible()
 {
-	// try
-	// {
-	// 	if ( _type == INT )
-	// 		_i = std::strtoi( _str );
-	// 	else if ( _type == FLOAT )
-	// 		_f = std::strof( _str );
-	// 	else if ( _type == DOUBLE )
-	// 		_d = std::strtod( _str );
-	// }
-	// catch (std::exception& e)
-	// {
-	// 	_isValid = false;
-	// 	return true;
-	// }
+	for (size_t i = 0 ; i < _str.length() ; i++)
+	{
+		if (std::isalpha(_str[i]) && _str.length() >= 2)
+			throw ScalarConverter::InvalidEception();
+	}
+	long overflowChecker = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
+	if (overflowChecker == std::numeric_limits<int>::min() && _str != "-2147483648")
+		throw ScalarConverter::OverflowEception();
 	return false;
 }
 
@@ -211,8 +205,8 @@ void ScalarConverter::convert(std::string s)
 	_str = s;
 	setType();
 
-	// if (isImpossible())
-	// 	return;
+	if (isImpossible())
+		return;
 	switch (_type)
 	{
 	case CHAR:
@@ -222,7 +216,7 @@ void ScalarConverter::convert(std::string s)
 		_d = static_cast< double >(_c);
 		break;
 	case INT:
-		_i = static_cast<int>(std::strtod(_str.c_str(), NULL));
+		_i = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
 		_f = static_cast< float >(_i);
 		_d = static_cast< double >(_i);
 		_c = static_cast< char >(_i);
