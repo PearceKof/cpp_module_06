@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/01 17:44:23 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/03 16:14:45 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,18 @@ bool		ScalarConverter::_isValid = true;
 
 bool ScalarConverter::isChar()
 {
-    return _str.length() == 1 && std::isalpha( _str[0] ) && std::isprint( _str[0] );
+    return _str.length() == 1 && std::isprint( _str[0] );
 }
 
 bool ScalarConverter::isInt()
 {
-    int j = 0;
+	if (_str.length() == 0)
+		return false;
+    size_t j = 0;
     if ( _str[j] == '-' || _str[j] == '+' )
         j++;
-    for ( int i( j ); i < ( int ) _str.length(); i++ )
+
+    for ( size_t i( j ); i < _str.length() ; i++ )
 	{
         if ( !std::isdigit( _str[i] ) )
             return false;
@@ -44,17 +47,19 @@ bool ScalarConverter::isInt()
 
 bool ScalarConverter::isFloat()
 {
-    if ( _str.find( '.' ) == std::string::npos || _str.length() - 1 != 'f' 
-        || _str.find( '.' ) == 0 || _str.find( '.' ) == _str.length() - 2 )
-        return false;
+	if ( _str.find( '.' ) == std::string::npos || _str[_str.length() - 1] != 'f' 
+		|| _str.find( '.' ) == 0 || _str.find( '.' ) == _str.length() - 2 )
+		return false;
+
     int found = 0;
-    int j = 0;
+    size_t j = 0;
     if ( _str[j] == '-' || _str[j] == '+' )
         j++;
-    for ( int i( j ); i < ( int ) _str.length() - 1; i++ ) {
+    for ( size_t i( j ); i < _str.length() - 1; i++ )
+	{
         if ( _str[i] == '.' )
             found++;
-        if ( ( !std::isdigit( _str[i] ) && _str[i] != '.' ) || found > 1 )
+        if ( ( !std::isdigit( _str[i] ) && (_str[i] != 'f' && _str[i] != '.' && i != _str.length() - 1 )) || found > 1 )
             return false;
     }
 
@@ -93,11 +98,9 @@ bool ScalarConverter::isLiteral()
 
 bool ScalarConverter::isImpossible()
 {
-	for (size_t i = 0 ; i < _str.length() ; i++)
-	{
-		if (std::isalpha(_str[i]) && _str.length() >= 2)
-			throw ScalarConverter::InvalidEception();
-	}
+	if ( _str.empty() == true || ( !isChar() && !isInt() && !isFloat() && !isDouble() && !isLiteral() ) )
+		throw ScalarConverter::InvalidEception();
+
 	long overflowChecker = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
 	if (overflowChecker == std::numeric_limits<int>::min() && _str != "-2147483648")
 		throw ScalarConverter::OverflowEception();
@@ -210,24 +213,28 @@ void ScalarConverter::convert(std::string s)
 	switch (_type)
 	{
 	case CHAR:
+		// std::cout << "is a char" << std::endl;
 		_c = _str[0];
 		_i = static_cast< int >(_c);
 		_f = static_cast< float >(_c);
 		_d = static_cast< double >(_c);
 		break;
 	case INT:
+		// std::cout << "is a int" << std::endl;
 		_i = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
 		_f = static_cast< float >(_i);
 		_d = static_cast< double >(_i);
 		_c = static_cast< char >(_i);
 		break;
 	case FLOAT:
+		// std::cout << "is a float" << std::endl;
 		_f = std::strtof(_str.c_str(), NULL);
 		_i = static_cast< int >(_f);
 		_d = static_cast< double >(_f);
 		_c = static_cast< char >(_f);
 		break;
 	case DOUBLE:
+		// std::cout << "is a double" << std::endl;
 		_d = std::strtod(_str.c_str(), NULL);
 		_i = static_cast< int >(_d);
 		_f = static_cast< float >(_d);
