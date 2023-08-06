@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 17:49:11 by blaurent          #+#    #+#             */
-/*   Updated: 2023/07/11 16:49:48 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/06 18:37:58 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ class Serializer
 {
 private:
 	Serializer();
+	Serializer(const Serializer&);
+	operator=(const Serializer&);
 public:
 	~Serializer();
 	static Data* deserialize(uintptr_t data);
