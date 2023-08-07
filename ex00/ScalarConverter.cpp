@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/07 14:42:05 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:42:08 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,8 @@ void ScalarConverter::printFloat()
 		std::cout << "-inff";
 	else
 	{
-        if ( _f - static_cast< int > ( _f ) == 0 )
+		std::cout << _f <<  " RESULT= " << ((int)_f % 1) << std::endl;
+        if ( ((int)_f % 1) == 0)
 			std::cout << _f << ".0f";
 		else
 			std::cout << _f << "f";
@@ -214,34 +215,32 @@ void ScalarConverter::convert(std::string s)
 	switch ( _type )
 	{
 	case CHAR:
-		std::cout << "is a char" << std::endl;
+		// std::cout << "is a char" << std::endl;
 		_c = _str[0];
 		_i = static_cast< int >(_c);
 		_f = static_cast< float >(_c);
 		_d = static_cast< double >(_c);
 		break;
 	case INT:
-		std::cout << "is a int" << std::endl;
+		// std::cout << "is a int" << std::endl;
 		_i = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
 		_f = static_cast< float >(_i);
 		_d = static_cast< double >(_i);
 		_c = static_cast< char >(_i);
 		break;
 	case FLOAT:
-		std::cout << "is a float" << std::endl;
-		_f = std::strtof(_str.c_str(), NULL);
+		// std::cout << "is a float" << std::endl;
+		_f = static_cast<float>(std::strtold(_str.c_str(), NULL));
 		_i = static_cast< int >(_f);
 		_d = static_cast< double >(_f);
 		_c = static_cast< char >(_f);
 		break;
 	case DOUBLE:
-		std::cout << "is a double" << std::endl;
-		_d = std::strtod(_str.c_str(), NULL);
+		// std::cout << "is a double" << std::endl;
+		_d = static_cast< double >(std::strtold(_str.c_str(), NULL));
 		_i = static_cast< int >(_d);
 		_f = static_cast< float >(_d);
 		_c = static_cast< char >(_d);
-		break;
-	default:
 		break;
 	}
 	

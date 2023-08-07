@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:28:24 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/07 14:41:49 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:06:25 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define SCALARCONVERTER_HPP
 
 # include <string>
+# include <cmath>
 # include <iostream>
 # include <cstdlib>
 # include <cctype>
@@ -40,6 +41,8 @@ private:
 
 	ScalarConverter();
 	ScalarConverter(const ScalarConverter& src);
+	ScalarConverter&	operator=(const ScalarConverter& src);
+	~ScalarConverter();
 
 	static bool isChar();
 	static bool isInt();
@@ -54,8 +57,6 @@ private:
 	static void printDouble();
 	static void setType();
 public:
-	~ScalarConverter();
-	ScalarConverter&	operator=(const ScalarConverter& src);
 	static void	convert(std::string s);
 	static void printResult();
 
