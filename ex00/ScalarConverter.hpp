@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:28:24 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/01 17:37:05 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/07 14:41:49 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ private:
 	static float		_f;
 	static double		_d;
 	static int			_type;
-	static bool			_isValid;
 
 	ScalarConverter();
 	ScalarConverter(const ScalarConverter& src);
@@ -47,7 +46,7 @@ private:
 	static bool isFloat();
 	static bool isDouble();
 	static bool isLiteral();
-	static bool isImpossible();
+	static void isImpossible();
 
 	static void printChar();
 	static void printInt();

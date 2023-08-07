@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/03 16:14:45 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/07 14:42:05 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int			ScalarConverter::_i = 0;
 float		ScalarConverter::_f = 0;
 double		ScalarConverter::_d = 0;
 int			ScalarConverter::_type = 0;
-bool		ScalarConverter::_isValid = true;
 
 /*
 ------------------isType functions------------------
@@ -26,18 +25,21 @@ bool		ScalarConverter::_isValid = true;
 
 bool ScalarConverter::isChar()
 {
-    return _str.length() == 1 && std::isprint( _str[0] );
+	if ( _str.length() == 1 && std::isprint( _str[0] ) && !std::isdigit( _str[0] ) )
+		return true;
+    return false;
 }
 
 bool ScalarConverter::isInt()
 {
-	if (_str.length() == 0)
+	if ( _str.length() == 0 )
 		return false;
+
     size_t j = 0;
     if ( _str[j] == '-' || _str[j] == '+' )
         j++;
 
-    for ( size_t i( j ); i < _str.length() ; i++ )
+    for ( size_t i( j ) ; i < _str.length() ; i++ )
 	{
         if ( !std::isdigit( _str[i] ) )
             return false;
@@ -51,15 +53,16 @@ bool ScalarConverter::isFloat()
 		|| _str.find( '.' ) == 0 || _str.find( '.' ) == _str.length() - 2 )
 		return false;
 
-    int found = 0;
     size_t j = 0;
     if ( _str[j] == '-' || _str[j] == '+' )
         j++;
-    for ( size_t i( j ); i < _str.length() - 1; i++ )
+
+    int found = 0;
+    for ( size_t i( j ) ; i < _str.length() - 1 ; i++ )
 	{
         if ( _str[i] == '.' )
             found++;
-        if ( ( !std::isdigit( _str[i] ) && (_str[i] != 'f' && _str[i] != '.' && i != _str.length() - 1 )) || found > 1 )
+        if ( ( !std::isdigit( _str[i] ) && _str[i] != '.' && (_str[i] == 'f' && i != _str.length() - 1 )) || found > 1 )
             return false;
     }
 
@@ -71,54 +74,56 @@ bool ScalarConverter::isDouble()
     if ( _str.find( '.' ) == std::string::npos || _str.find( '.' ) == 0 
         || _str.find( '.' ) == _str.length() - 1 )
         return false;
-    int j = 0;
-    int found = 0;
+
+    size_t j = 0;
     if ( _str[j] == '-' || _str[j] == '+' )
         j++;
-    for ( int i( j ); i < ( int ) _str.length(); i++ )
+
+    int found = 0;
+    for ( size_t i( j ); i <  _str.length(); i++ )
 	{
         if ( _str[i] == '.' )
             found++;
         if ( ( !std::isdigit( _str[i] ) && _str[i] != '.' ) || found > 1 )
             return false;
     }
+
     return true;
 }
 
 bool ScalarConverter::isLiteral()
 {
-	if (!_isValid || !_str.compare("nan") || !_str.compare("nanf")
+	if ( !_str.compare("nan") || !_str.compare("nanf")
         || !_str.compare("+inf") || !_str.compare("+inff")
         || !_str.compare("-inf") || !_str.compare( "-inff" )
         || !_str.compare("-inff") || !_str.compare( "-inff" )
-        || !_str.compare("+inff") || !_str.compare( "+inff" ))
+        || !_str.compare("+inff") || !_str.compare( "+inff" ) )
             return true;
     return false;
 }
 
-bool ScalarConverter::isImpossible()
+void ScalarConverter::isImpossible()
 {
 	if ( _str.empty() == true || ( !isChar() && !isInt() && !isFloat() && !isDouble() && !isLiteral() ) )
 		throw ScalarConverter::InvalidEception();
 
 	long overflowChecker = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
-	if (overflowChecker == std::numeric_limits<int>::min() && _str != "-2147483648")
+	if ( overflowChecker == std::numeric_limits<int>::min() && _str != "-2147483648" )
 		throw ScalarConverter::OverflowEception();
-	return false;
 }
 
 
 void ScalarConverter::setType()
 {
-	if (isChar())
+	if ( isChar() )
 		_type = CHAR;
-	else if (isInt())
+	else if ( isInt() )
 		_type = INT;
-	else if (isFloat())
+	else if ( isFloat() )
 		_type = FLOAT;
-	else if (isDouble())
+	else if ( isDouble() )
 		_type = DOUBLE;
-	else if (isLiteral())
+	else if ( isLiteral() )
 		_type = LITERAL;
 	else
 		_type = VOID;
@@ -131,9 +136,9 @@ void ScalarConverter::printChar()
 {
 	std::cout << "char: ";
 
-    if ((_i > 127 || _i < 0) || !_isValid || _type == LITERAL)
+    if ( ( _i > 127 || _i < 0 ) || _type == LITERAL )
         std::cout << "impossible";
-    else if (!std::isprint(_i))
+    else if ( !std::isprint( _i ) )
 	{
         std::cout << "Non displayable";
 	}
@@ -145,7 +150,7 @@ void ScalarConverter::printChar()
 void ScalarConverter::printInt()
 {
 	std::cout << "int: ";
-	if (!_isValid || _type == LITERAL)
+	if ( _type == LITERAL )
 		std::cout << "impossible";
 	else
 		std::cout << _i;
@@ -155,17 +160,16 @@ void ScalarConverter::printInt()
 void ScalarConverter::printFloat()
 {
 	std::cout << "float: ";
+
 	if (!_str.compare("nan") || !_str.compare("nanf"))
 		std::cout << "nanf";
 	else if (!_str.compare("+inff") || !_str.compare("+inf"))
 		std::cout << "+inff";
 	else if (!_str.compare( "-inff" ) || !_str.compare("-inf"))
 		std::cout << "-inff";
-	else if (!_isValid)
-		std::cout << "impossible";
 	else
 	{
-        if (_f - static_cast< int > ( _f ) == 0)
+        if ( _f - static_cast< int > ( _f ) == 0 )
 			std::cout << _f << ".0f";
 		else
 			std::cout << _f << "f";
@@ -183,8 +187,6 @@ void ScalarConverter::printDouble()
         std::cout << "+inf";
     else if (!_str.compare( "-inff" ) || !_str.compare( "-inf" ))
         std::cout << "-inf";
-    else if (!_isValid)
-        std::cout << "impossible";
     else
 	{
         if (_d - static_cast<int>(_d) == 0)
@@ -208,33 +210,32 @@ void ScalarConverter::convert(std::string s)
 	_str = s;
 	setType();
 
-	if (isImpossible())
-		return;
-	switch (_type)
+	isImpossible();
+	switch ( _type )
 	{
 	case CHAR:
-		// std::cout << "is a char" << std::endl;
+		std::cout << "is a char" << std::endl;
 		_c = _str[0];
 		_i = static_cast< int >(_c);
 		_f = static_cast< float >(_c);
 		_d = static_cast< double >(_c);
 		break;
 	case INT:
-		// std::cout << "is a int" << std::endl;
+		std::cout << "is a int" << std::endl;
 		_i = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
 		_f = static_cast< float >(_i);
 		_d = static_cast< double >(_i);
 		_c = static_cast< char >(_i);
 		break;
 	case FLOAT:
-		// std::cout << "is a float" << std::endl;
+		std::cout << "is a float" << std::endl;
 		_f = std::strtof(_str.c_str(), NULL);
 		_i = static_cast< int >(_f);
 		_d = static_cast< double >(_f);
 		_c = static_cast< char >(_f);
 		break;
 	case DOUBLE:
-		// std::cout << "is a double" << std::endl;
+		std::cout << "is a double" << std::endl;
 		_d = std::strtod(_str.c_str(), NULL);
 		_i = static_cast< int >(_d);
 		_f = static_cast< float >(_d);
