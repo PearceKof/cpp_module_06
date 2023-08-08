@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/07 16:42:08 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/08 18:58:49 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,6 @@ void ScalarConverter::isImpossible()
 {
 	if ( _str.empty() == true || ( !isChar() && !isInt() && !isFloat() && !isDouble() && !isLiteral() ) )
 		throw ScalarConverter::InvalidEception();
-
-	long overflowChecker = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
-	if ( overflowChecker == std::numeric_limits<int>::min() && _str != "-2147483648" )
-		throw ScalarConverter::OverflowEception();
 }
 
 
@@ -136,7 +132,7 @@ void ScalarConverter::printChar()
 {
 	std::cout << "char: ";
 
-    if ( ( _i > 127 || _i < 0 ) || _type == LITERAL )
+    if ( ( _i > 255 || _i < 0 ) || _type == LITERAL )
         std::cout << "impossible";
     else if ( !std::isprint( _i ) )
 	{
@@ -150,7 +146,8 @@ void ScalarConverter::printChar()
 void ScalarConverter::printInt()
 {
 	std::cout << "int: ";
-	if ( _type == LITERAL )
+	double overflowChecker = strtod(_str.c_str(), NULL);
+	if ((errno == ERANGE) || overflowChecker < std::numeric_limits<int>::min() || std::numeric_limits<int>::max() < overflowChecker)
 		std::cout << "impossible";
 	else
 		std::cout << _i;
@@ -162,20 +159,19 @@ void ScalarConverter::printFloat()
 	std::cout << "float: ";
 
 	if (!_str.compare("nan") || !_str.compare("nanf"))
-		std::cout << "nanf";
+		std::cout << "nanf" << std::endl;
 	else if (!_str.compare("+inff") || !_str.compare("+inf"))
-		std::cout << "+inff";
+		std::cout << "+inff" << std::endl;
 	else if (!_str.compare( "-inff" ) || !_str.compare("-inf"))
-		std::cout << "-inff";
+		std::cout << "-inff" << std::endl;
 	else
 	{
-		std::cout << _f <<  " RESULT= " << ((int)_f % 1) << std::endl;
-        if ( ((int)_f % 1) == 0)
-			std::cout << _f << ".0f";
+		double overflowChecker = strtod(_str.c_str(), NULL);
+		if ((errno == ERANGE && (overflowChecker == -HUGE_VAL || overflowChecker == HUGE_VAL)) || (overflowChecker < FLT_MIN || overflowChecker > FLT_MAX))
+			std::cout << "impossible" << std::endl;
 		else
-			std::cout << _f << "f";
+			std::cout <<  std::setprecision(1) << std::fixed << _f << "f" << " versus " << static_cast<float>(overflowChecker) << std::endl;
 	}
-	std::cout << std::endl;
 }
 
 void ScalarConverter::printDouble()
@@ -183,19 +179,19 @@ void ScalarConverter::printDouble()
 	std::cout << "double: ";
 
     if (!_str.compare("nan") || !_str.compare("nanf"))
-        std::cout << "nan";
+        std::cout << "nan" << std::endl;
     else if (!_str.compare("+inff") || !_str.compare( "+inf"))
-        std::cout << "+inf";
+        std::cout << "+inf" << std::endl;
     else if (!_str.compare( "-inff" ) || !_str.compare( "-inf" ))
-        std::cout << "-inf";
+        std::cout << "-inf" << std::endl;
     else
 	{
-        if (_d - static_cast<int>(_d) == 0)
-            std::cout << _d << ".0";
-        else
-            std::cout << _d;
+		double overflowChecker = strtod(_str.c_str(), NULL);
+		if (errno == ERANGE && (overflowChecker == -HUGE_VAL || overflowChecker == HUGE_VAL))
+			std::cout << "impossible" << std::endl;
+		else
+			std::cout << std::setprecision(1) << std::fixed << _d << " versus " << static_cast<double>(overflowChecker) << std::endl;
     }
-	std::cout << std::endl;
 }
 
 void ScalarConverter::printResult()
@@ -223,21 +219,21 @@ void ScalarConverter::convert(std::string s)
 		break;
 	case INT:
 		// std::cout << "is a int" << std::endl;
-		_i = static_cast<int>(std::strtol(_str.c_str(), NULL, 10));
+		_i = static_cast<int>(std::strtod(_str.c_str(), NULL));
 		_f = static_cast< float >(_i);
 		_d = static_cast< double >(_i);
 		_c = static_cast< char >(_i);
 		break;
 	case FLOAT:
 		// std::cout << "is a float" << std::endl;
-		_f = static_cast<float>(std::strtold(_str.c_str(), NULL));
+		_f = static_cast<float>(std::strtod(_str.c_str(), NULL));
 		_i = static_cast< int >(_f);
 		_d = static_cast< double >(_f);
 		_c = static_cast< char >(_f);
 		break;
 	case DOUBLE:
 		// std::cout << "is a double" << std::endl;
-		_d = static_cast< double >(std::strtold(_str.c_str(), NULL));
+		_d = static_cast< double >(std::strtod(_str.c_str(), NULL));
 		_i = static_cast< int >(_d);
 		_f = static_cast< float >(_d);
 		_c = static_cast< char >(_d);

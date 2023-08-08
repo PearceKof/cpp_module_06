@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:28:24 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/07 15:06:25 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/08 18:58:56 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 # include <cstdlib>
 # include <cctype>
 # include <limits>
+# include <iomanip>
+# include <cerrno>
+
+#define FLT_MIN -3.40282e+38
+#define FLT_MAX 3.40282e+38
 
 enum{
 	CHAR,
@@ -59,12 +64,6 @@ private:
 public:
 	static void	convert(std::string s);
 	static void printResult();
-
-	class OverflowEception : public std::exception
-	{
-		public:
-			virtual const char* what() const throw() { return "Overflow"; };
-	};
 	class InvalidEception : public std::exception
 	{
 		public:
