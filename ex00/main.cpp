@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:25:52 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/07 14:48:06 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/09 13:30:09 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	main(int ac, char **av)
 	try
 	{
 		ScalarConverter::convert(av[1]);
-		ScalarConverter::printResult();
 	}
 	catch(const std::exception& e)
 	{

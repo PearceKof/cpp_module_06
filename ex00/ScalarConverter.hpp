@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:28:24 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/08 18:58:56 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/09 13:51:23 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,18 @@
 # include <iomanip>
 # include <cerrno>
 
-#define FLT_MIN -3.40282e+38
-#define FLT_MAX 3.40282e+38
-
 enum{
 	CHAR,
 	INT,
 	FLOAT,
 	DOUBLE,
-	LITERAL,
-	VOID
+	LITERAL
 };
 
 class ScalarConverter
 {
 private:
 	static std::string	_str;
-	static char			_c;
-	static int			_i;
-	static float		_f;
-	static double		_d;
 	static int			_type;
 
 	ScalarConverter();
@@ -63,8 +55,7 @@ private:
 	static void setType();
 public:
 	static void	convert(std::string s);
-	static void printResult();
-	class InvalidEception : public std::exception
+	class InvalidException : public std::exception
 	{
 		public:
 			virtual const char* what() const throw() { return "Argument invalide"; };
