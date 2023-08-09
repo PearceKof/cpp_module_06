@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:28:24 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/09 13:51:23 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/09 14:12:13 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ private:
 	static bool isLiteral();
 	static void isImpossible();
 
-	static void printChar();
-	static void printInt();
-	static void printFloat();
-	static void printDouble();
+	static void printChar(double value);
+	static void printInt(double value);
+	static void printFloat(double value);
+	static void printDouble(double value);
 	static void setType();
 public:
 	static void	convert(std::string s);

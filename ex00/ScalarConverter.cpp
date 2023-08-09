@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/09 13:51:34 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/09 14:18:47 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,42 +123,44 @@ void ScalarConverter::setType()
 ------------------print functions------------------
 */
 
-void ScalarConverter::printChar()
+void ScalarConverter::printChar(double value)
 {
 	std::cout << "char: ";
 
-	double value = strtod(_str.c_str(), NULL);
-    if ( ( value > 255 || value < 0 ) || _type == LITERAL )
+	char c = _str[0];
+	int overflowChecker = static_cast<int>(value);
+    if ( ( overflowChecker > 255 || overflowChecker < 0 ) || _type == LITERAL )
         std::cout << "impossible";
-    else if ( !std::isprint( static_cast<int>(value) ) )
+    else if ( !std::isprint( overflowChecker ) )
 	{
         std::cout << "Non displayable";
 	}
     else
-        std::cout << "'" << static_cast<char>(value) << "'";
+        std::cout << "'" << c << "'";
     std::cout << std::endl;
 }
 
-void ScalarConverter::printInt()
+void ScalarConverter::printInt(double value)
 {
 	std::cout << "int: ";
 
-	double value = strtod(_str.c_str(), NULL);
-	if (_type == LITERAL || (errno == ERANGE) || value < std::numeric_limits<int>::min() || std::numeric_limits<int>::max() < value)
+	double overflowChecker = strtod(_str.c_str(), NULL);
+	if (_type == LITERAL || (errno == ERANGE) || overflowChecker < std::numeric_limits<int>::min() || std::numeric_limits<int>::max() < overflowChecker)
 		std::cout << "impossible";
+	else if (_type == CHAR)
+		std::cout << static_cast<int>(_str[0]);
 	else
 		std::cout << static_cast<int>(value);
 	std::cout << std::endl;
 }
 
-void ScalarConverter::printFloat()
+void ScalarConverter::printFloat(double value)
 {
 	std::cout << "float: ";
 
-	double value = strtod(_str.c_str(), NULL);
 	if (!_str.compare("nan") || !_str.compare("nanf") || std::isnan(value))
 		std::cout << "nanf" << std::endl;
-	else if (!_str.compare("+inff") || !_str.compare("+inf") || (std::isinf(value) && value > 0) || value > std::numeric_limits<float>::max())
+	else if (!_str.compare("+inff") || !_str.compare("+inf") || ((std::isinf(value) && value > 0) || value > std::numeric_limits<float>::max()))
 		std::cout << "+inff" << std::endl;
 	else if (!_str.compare( "-inff" ) || !_str.compare("-inf") || (std::isinf(value) && value < 0))
 		std::cout << "-inff" << std::endl;
@@ -166,11 +168,10 @@ void ScalarConverter::printFloat()
 			std::cout <<  std::setprecision(1) << std::fixed << static_cast<float>(value) << "f" << std::endl;
 }
 
-void ScalarConverter::printDouble()
+void ScalarConverter::printDouble(double value)
 {
 	std::cout << "double: ";
 
-	double value = strtod(_str.c_str(), NULL);
 	if (!_str.compare("nan") || !_str.compare("nanf") || std::isnan(value))
         std::cout << "nan" << std::endl;
     else if (!_str.compare("+inff") || !_str.compare( "+inf") || (std::isinf(value) && value > 0))
@@ -187,9 +188,14 @@ void ScalarConverter::convert(std::string s)
 	
 	setType();
 
-	printChar();
-	printInt();
-	printFloat();
-	printDouble();
+	double value = 0.0;
+	if (_type == CHAR)
+		value = static_cast<double>(_str[0]);
+	else
+		value = strtod(_str.c_str(), NULL);
+	printChar(value);
+	printInt(value);
+	printFloat(value);
+	printDouble(value);
 
 }
