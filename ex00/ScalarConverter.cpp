@@ -6,7 +6,7 @@
 /*   By: blaurent <blaurent@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 18:29:31 by blaurent          #+#    #+#             */
-/*   Updated: 2023/08/09 14:18:47 by blaurent         ###   ########.fr       */
+/*   Updated: 2023/08/09 14:24:11 by blaurent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void ScalarConverter::printChar(double value)
 {
 	std::cout << "char: ";
 
-	char c = _str[0];
+	char c = static_cast<char>(value);
 	int overflowChecker = static_cast<int>(value);
     if ( ( overflowChecker > 255 || overflowChecker < 0 ) || _type == LITERAL )
         std::cout << "impossible";
